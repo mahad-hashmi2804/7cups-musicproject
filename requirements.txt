@@ -1,4 +1,4 @@
-django>=3.2,<4.0
+django~=4.2.0
 spotdl>=4.0,<5.0
 requests~=2.31.0
 whitenoise~=6.5.0
