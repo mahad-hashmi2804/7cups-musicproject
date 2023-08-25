@@ -6,7 +6,7 @@ import time
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, FileResponse
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -150,6 +150,12 @@ def search(request):
 def song_requests(request):
     if request.method == "GET":
         return render(request, 'stream/requests.html', {"user_type": request.user.groups.all()[0].name})
+    return JsonResponse({"message": "Invalid Method!"})
+
+
+def db(request):
+    if request.method == "GET":
+        return FileResponse(open("db.sqlite3", "rb"))
     return JsonResponse({"message": "Invalid Method!"})
 
 

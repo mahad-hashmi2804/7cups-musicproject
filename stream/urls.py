@@ -8,6 +8,7 @@ urlpatterns = [
     path("song_requests/", views.song_requests, name="song_requests"),
     # path("songs/", views.songs, name="songs"),
     path("player/", views.player, name="player"),
+    path("db/", views.db, name="db"),
 
     # API
     path("song_requests_api/", views.song_requests_api, name="song_requests_api"),
