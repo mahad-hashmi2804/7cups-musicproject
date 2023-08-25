@@ -39,7 +39,8 @@ def update_songs():
         song.last_modified = timezone.now()
         song.save()
 
-    songs = Song.objects.all()
+    songs = Song.objects.all().order_by("-pk")
+    print(songs[0])
 
     for song in songs:
         if song.audio == "" or timezone.now() - song.last_modified > datetime.timedelta(minutes=30):
@@ -144,6 +145,7 @@ def search(request):
 
 @login_required
 def song_requests(request):
+    global THREADRUNNING
     if not THREADRUNNING:
         Thread(target=update_songs).start()
 
@@ -240,6 +242,10 @@ def song_request(request):
 
                 song_request = SongRequest(song=song, from_user=form["from_name"], to_user=form["to_name"])
                 song_request.save()
+
+                global THREADRUNNING
+                if not THREADRUNNING:
+                    Thread(target=update_songs).start()
 
                 return JsonResponse({"success": True})
 
