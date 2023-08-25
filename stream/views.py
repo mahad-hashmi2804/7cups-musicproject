@@ -40,14 +40,25 @@ def update_songs():
     while True:
         threads = []
         songs = Song.objects.all()
-        for song in songs:
-            if song.audio == "" or timezone.now() - song.last_modified > datetime.timedelta(minutes=30):
-                t = Thread(target=update_song, args=(song,))
-                t.start()
-                threads.append(t)
 
-        for thread in threads:
-            thread.join()
+        for n in range(0, len(songs), 10):
+            for song in songs[n:n + 10]:
+                if song.audio == "" or timezone.now() - song.last_modified > datetime.timedelta(minutes=30):
+                    t = Thread(target=update_song, args=(song,))
+                    t.start()
+                    threads.append(t)
+            for thread in threads:
+                thread.join()
+            threads = []
+
+        # for song in songs:
+        #     if song.audio == "" or timezone.now() - song.last_modified > datetime.timedelta(minutes=30):
+        #         t = Thread(target=update_song, args=(song,))
+        #         t.start()
+        #         threads.append(t)
+        #
+        # for thread in threads:
+        #     thread.join()
 
         time.sleep(300)
 
