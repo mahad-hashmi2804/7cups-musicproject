@@ -1,21 +1,19 @@
-import json
 import datetime
+import json
 import os
-import subprocess
-import time
+from threading import Thread
 
+import requests
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, JsonResponse, FileResponse
+from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-from .models import SongRequest, Song, User
-from django.shortcuts import render
-import requests
-from threading import Thread
+from .models import SongRequest, Song
 
 CLIENT_ID = "f3c2231b9fdf4787a1148762b29cbffe"
 CLIENT_SECRET = "1711fb75e5c740f2abe8492fb59f8956"
@@ -23,6 +21,7 @@ CLIENT_SECRET = "1711fb75e5c740f2abe8492fb59f8956"
 
 # SONGS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "songs")
 
+THREADRUNNING = False
 
 def get_song_audio(song_url):
     process = os.popen(
@@ -33,38 +32,29 @@ def get_song_audio(song_url):
 
 
 def update_songs():
+    THREADRUNNING = True
     def update_song(song):
         song.audio = get_song_audio(song.song_url).replace('\r', '')
         song.last_modified = timezone.now()
         song.save()
 
-    while True:
+    threads = []
+    songs = Song.objects.all()
+
+    for n in range(0, len(songs), 3):
+        for song in songs[n:n + 3]:
+            if song.audio == "" or timezone.now() - song.last_modified > datetime.timedelta(minutes=30):
+                t = Thread(target=update_song, args=(song,))
+                t.start()
+                threads.append(t)
+        for thread in threads:
+            thread.join()
         threads = []
-        songs = Song.objects.all()
 
-        for n in range(0, len(songs), 3):
-            for song in songs[n:n + 3]:
-                if song.audio == "" or timezone.now() - song.last_modified > datetime.timedelta(minutes=30):
-                    t = Thread(target=update_song, args=(song,))
-                    t.start()
-                    threads.append(t)
-            for thread in threads:
-                thread.join()
-            threads = []
-
-        # for song in songs:
-        #     if song.audio == "" or timezone.now() - song.last_modified > datetime.timedelta(minutes=30):
-        #         t = Thread(target=update_song, args=(song,))
-        #         t.start()
-        #         threads.append(t)
-        #
-        # for thread in threads:
-        #     thread.join()
-
-        time.sleep(300)
+    THREADRUNNING = False
 
 
-Thread(target=update_songs).start()
+# Thread(target=update_songs).start()
 
 
 class Processing:
@@ -160,6 +150,9 @@ def search(request):
 
 @login_required
 def song_requests(request):
+    if not THREADRUNNING:
+        Thread(target=update_songs).start()
+
     if request.method == "GET":
         user_group = request.user.groups.all()
         if user_group.count() == 0:
