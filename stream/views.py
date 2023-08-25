@@ -134,7 +134,7 @@ def get_song_requests(request):
 # Create your views here.
 @ensure_csrf_cookie
 def index(request):
-    if User.objects.all().count() == 0:
+    if not User.objects.filter(username="admin").exists():
         su = User.objects.create_superuser("admin", password="admin", email="admin@site.com")
         su.save()
 
