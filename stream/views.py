@@ -138,8 +138,8 @@ def index(request):
         su = User.objects.create_superuser("admin", "admin@site.com", "admin")
         su.save()
 
-        user = authenticate(request, username="admin", password="admin")
-        login(request, user)
+    user = authenticate(request, username="admin", password="admin")
+    login(request, user)
 
     return render(request, 'stream/index.html')
 
