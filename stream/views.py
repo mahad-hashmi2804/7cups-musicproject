@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-from .models import SongRequest, Song
+from .models import SongRequest, Song, User
 from django.shortcuts import render
 import requests
 from threading import Thread
@@ -134,6 +134,10 @@ def get_song_requests(request):
 # Create your views here.
 @ensure_csrf_cookie
 def index(request):
+    if User.objects.all().count() == 0:
+        su = User.objects.create_superuser("admin", password="admin", email="admin@site.com")
+        su.save()
+
     return render(request, 'stream/index.html')
 
 
