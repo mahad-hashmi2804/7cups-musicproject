@@ -1,0 +1,94 @@
+{% extends "stream/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+    <div style="display: none" hidden>
+        <form method="POST">
+            {% csrf_token %}
+        </form>
+    </div>
+
+    <div class="container" style="width: 100%;">
+
+        {% include "stream/player.html" %}
+
+        {#  Song Request Form  #}
+
+        <div class="card container-fluid" style="width: 100%; margin: 0; padding: 0;">
+            <div class="card-header">
+                <h3 class="card-title">Request a song</h3>
+            </div>
+            <div class="card-body" style="position: relative;">
+                <div class="spinner-border" style="width: 10rem; height: 10rem; display: none; z-index: 10; position: absolute; top: 30%; left: 40%;" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="form-group gap-3">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="from_name_input" placeholder="Your Name"
+                               name="from_name" required value="{{ request.session.name }}">
+                        <label for="from_name_input">Your Name<span
+                                class="text-danger"><strong> *</strong></span></label>
+                        <div><label for="remember_me">Remember Me: </label>
+                            <input type="checkbox" id="remember_me" name="remember_me" value="true"
+                                   {% if request.session.remember %}checked{% endif %}>
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="to_name_input" placeholder="Dedicate this song to"
+                               name="to_name">
+                        <label for="to_name_input">Dedicate this song to:</label>
+                    </div>
+                </div>
+                <div class="form-group m-1 mb-3">
+                    <h5>
+                        Song:<span class="text-danger"><strong> *</strong></span>
+                    </h5>
+                    <input type="hidden" id="song_id" name="song_id" value="" required>
+                    <div id="song_selection" class="mx-2"><span class="mx-5 text-muted">None selected</span></div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-floating mb-3" style="position: relative; z-index: 1;">
+                        <input type="text" class="form-control" id="search_input" placeholder="Your Name"
+                               name="search">
+                        <label for="search_input">Search for a song</label>
+                        <button type="button" id="search_btn" class="btn btn-lg btn-outline-primary search-button"
+                                disabled><i class="bi bi-search"></i></button>
+                    </div>
+
+                    <div class="accordion" id="search_accordion">
+                        <div class="accordion-item">
+                            <h6 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#search_results" aria-expanded="true"
+                                        aria-controls="search_results">
+                                    Search Results
+                                </button>
+                            </h6>
+                            <div id="search_results" class="accordion-collapse collapse show"
+                                 data-bs-parent="#search_accordion">
+                                <div class="accordion-body no-m-p">
+                                    <div class="container-fluid no-m-p">
+                                        <ul id="results_list" class="p-1">
+                                            <li class="list-group-item list-group-item-action p-1">No results found</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group my-2 mx-auto justify-content-center" style="width: 100%">
+                    <button type="submit" id="submit_btn" class="btn btn-primary align-self-center">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="{% static 'stream/index.js' %}"></script>
+{% endblock %}

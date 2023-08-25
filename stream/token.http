@@ -1,0 +1,14 @@
+###
+
+# curl -X POST "https://accounts.spotify.com/api/token"
+#     -H "Content-Type: application/x-www-form-urlencoded"
+#     -d "grant_type=client_credentials&client_id=your-client-id&client_secret=your-client-secret"
+POST https://accounts.spotify.com/api/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type = client_credentials &
+client_id = f3c2231b9fdf4787a1148762b29cbffe &
+client_secret = 1711fb75e5c740f2abe8492fb59f8956
+
+###
+

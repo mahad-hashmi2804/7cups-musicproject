@@ -1,0 +1,111 @@
+body {
+    padding: 3px;
+}
+
+.btn {
+    margin: 3px;
+}
+
+input.form-control {
+    border-radius: 20px;
+}
+
+.search-button {
+    z-index: 10;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-radius: 0 20px 20px 0;
+    height: 100%;
+}
+
+.no-m-p {
+    margin: 0;
+    padding: 0;
+}
+
+.player-row {
+    max-height: 75px;
+}
+
+.status-icon {
+    opacity: 0.75;
+    border-radius: 20px;
+    width: 20px;
+    height: 10px;
+    padding: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    color: #fff;
+}
+
+video {
+    height: 60px;
+}
+
+li.list-group-item {
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+    padding-bottom: 5px;
+    top: 10px;
+    margin-bottom: 5px;
+}
+
+.filter_btn {
+    margin: 3px;
+}
+
+.disabled-div {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+
+@media screen and (max-width: 540px) {
+    ul {
+        columns: 1;
+        -webkit-columns: 1;
+        -moz-columns: 1;
+    }
+
+    .title {
+        max-width: 130px;
+        line-break: auto;
+        word-wrap: break-word;
+    }
+
+    .song-img {
+        max-width: 64px;
+        max-height: 64px;
+    }
+
+    li.list-group-item {
+        width: 100%;
+        padding: 0;
+    }
+}
+
+/* For Tablets */
+@media screen and (min-width: 540px) {
+    /*ul {*/
+    /*    columns: 2;*/
+    /*    -webkit-columns: 2;*/
+    /*    -moz-columns: 2;*/
+    /*    flex-wrap: wrap; !* Allow items to wrap into columns *!*/
+    /*}*/
+    .grid-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 10px;
+    }
+
+
+    .song-img {
+        max-width: 100px;
+        max-height: 100px;
+    }
+
+    li.list-group-item {
+        padding: 10px;
+    }
+}
