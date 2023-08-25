@@ -177,7 +177,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f"Welcome {username}!")
-                return HttpResponseRedirect(reverse("index"))
+                return HttpResponseRedirect(reverse("song_requests"))
             else:
                 messages.error(request, "Invalid Credentials!", extra_tags="danger")
                 return HttpResponseRedirect(reverse("login"))
