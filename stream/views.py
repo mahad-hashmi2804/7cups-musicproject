@@ -42,7 +42,8 @@ def update_songs():
     songs = Song.objects.all()
 
     for song in songs:
-        update_song(song)
+        if song.audio == "" or timezone.now() - song.last_modified > datetime.timedelta(minutes=30):
+            update_song(song)
 
     THREADRUNNING = False
 
