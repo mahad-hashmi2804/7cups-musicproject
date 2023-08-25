@@ -63,7 +63,7 @@ def update_songs():
         time.sleep(300)
 
 
-Thread(target=update_songs).start()
+# Thread(target=update_songs).start()
 
 
 class Processing:
