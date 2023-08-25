@@ -32,29 +32,22 @@ def get_song_audio(song_url):
 
 
 def update_songs():
+    global THREADRUNNING
     THREADRUNNING = True
     def update_song(song):
         song.audio = get_song_audio(song.song_url).replace('\r', '')
         song.last_modified = timezone.now()
         song.save()
 
-    threads = []
     songs = Song.objects.all()
 
-    for n in range(0, len(songs), 3):
-        for song in songs[n:n + 3]:
-            if song.audio == "" or timezone.now() - song.last_modified > datetime.timedelta(minutes=30):
-                t = Thread(target=update_song, args=(song,))
-                t.start()
-                threads.append(t)
-        for thread in threads:
-            thread.join()
-        threads = []
+    for song in songs:
+        update_song(song)
 
     THREADRUNNING = False
 
 
-# Thread(target=update_songs).start()
+Thread(target=update_songs).start()
 
 
 class Processing:
