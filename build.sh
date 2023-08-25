@@ -2,6 +2,7 @@
 # exit on error
 set -o errexit
 
+poetry lock
 poetry install
 
 pip install --upgrade pip
