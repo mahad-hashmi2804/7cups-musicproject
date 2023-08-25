@@ -1,5 +1,6 @@
 import json
 import datetime
+import os
 import subprocess
 import time
 
@@ -24,11 +25,11 @@ CLIENT_SECRET = "1711fb75e5c740f2abe8492fb59f8956"
 
 
 def get_song_audio(song_url):
-    process = subprocess.Popen(
-        ["spotdl", "url", song_url], stdout=subprocess.PIPE
-    ).communicate()[0]
+    process = os.popen(
+        "spotdl url " + song_url
+    )
 
-    return process.decode("utf-8").split("\n")[1]
+    return process.read().split("\n")[1]
 
 
 def update_songs():
@@ -41,8 +42,8 @@ def update_songs():
         threads = []
         songs = Song.objects.all()
 
-        for n in range(0, len(songs), 10):
-            for song in songs[n:n + 10]:
+        for n in range(0, len(songs), 3):
+            for song in songs[n:n + 3]:
                 if song.audio == "" or timezone.now() - song.last_modified > datetime.timedelta(minutes=30):
                     t = Thread(target=update_song, args=(song,))
                     t.start()
@@ -63,7 +64,7 @@ def update_songs():
         time.sleep(300)
 
 
-# Thread(target=update_songs).start()
+Thread(target=update_songs).start()
 
 
 class Processing:
