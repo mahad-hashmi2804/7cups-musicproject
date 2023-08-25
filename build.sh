@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # exit on error
 set -o errexit
-
-poetry lock
-poetry install
+#
+#poetry lock
+#poetry install
 
 pip install --upgrade pip
 pip install -r requirements.txt
