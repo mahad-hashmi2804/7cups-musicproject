@@ -20,7 +20,9 @@
                 <h3 class="card-title">Request a song</h3>
             </div>
             <div class="card-body" style="position: relative;">
-                <div class="spinner-border" style="width: 10rem; height: 10rem; display: none; z-index: 10; position: absolute; top: 30%; left: 40%;" role="status">
+                <div class="spinner-border"
+                     style="width: 10rem; height: 10rem; display: none; z-index: 10; position: absolute; top: 30%; left: 40%;"
+                     role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
                 <div class="form-group gap-3">
@@ -54,7 +56,9 @@
                                name="search">
                         <label for="search_input">Search for a song</label>
                         <button type="button" id="search_btn" class="btn btn-lg btn-outline-primary search-button"
-                                disabled><i class="bi bi-search"></i></button>
+                                disabled
+                                style="z-index: 10;position: absolute;right: 0;top: 0;border-radius: 0 20px 20px 0;height: 100%;">
+                            <i class="bi bi-search"></i></button>
                     </div>
 
                     <div class="accordion" id="search_accordion">
