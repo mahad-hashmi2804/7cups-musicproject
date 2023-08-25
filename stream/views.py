@@ -49,10 +49,10 @@ def update_songs():
         for thread in threads:
             thread.join()
 
-        time.sleep(600)
+        time.sleep(300)
 
 
-# Thread(target=update_songs).start()
+Thread(target=update_songs).start()
 
 
 class Processing:
@@ -149,6 +149,10 @@ def search(request):
 @login_required
 def song_requests(request):
     if request.method == "GET":
+        user_group = request.user.groups.all()
+        if user_group.count() == 0:
+            request.user.groups.add(name="Song Requester")
+            request.user.save()
         return render(request, 'stream/requests.html', {"user_type": request.user.groups.all()[0].name})
     return JsonResponse({"message": "Invalid Method!"})
 
