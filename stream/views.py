@@ -38,12 +38,13 @@ def update_songs():
     global THREADRUNNING
     THREADRUNNING = True
     def update_song(song):
+        print(song)
         song.audio = get_song_audio(song.song_url).replace('\r', '')
         song.last_modified = timezone.now()
         song.save()
 
     songs = Song.objects.all().order_by("-pk")
-    print(songs[0])
+    # print(songs[0])
 
     for song in songs:
         if song.audio == "" or timezone.now() - song.last_modified > datetime.timedelta(minutes=30):
