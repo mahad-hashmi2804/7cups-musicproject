@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'dbbackup',
 ]
 
 MIDDLEWARE = [
@@ -154,3 +155,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DBBACKUP_STORAGE = 'dbbackup.storage.dropbox_storage'
+DBBACKUP_TOKENS_FILEPATH = BASE_DIR / 'db_tokens.json'
+DBBACKUP_DROPBOX_APP_KEY = "3u5hw6voiq6cuk4"
+DBBACKUP_DROPBOX_APP_SECRET = "hzr2l1f3dlrq4mo"
