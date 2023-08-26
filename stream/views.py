@@ -56,7 +56,7 @@ def update_songs():
     THREADRUNNING = False
 
 
-Thread(target=update_songs).start()
+# Thread(target=update_songs).start()
 
 
 class Processing:
