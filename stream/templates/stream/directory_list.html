@@ -7,7 +7,7 @@
     <h1>Directory Listing</h1>
     <ul>
         {% for file in files %}
-            <li><a href="{{ file.url }}">{{ file.name }}</a></li>
+            <li><a href="your_directory_name/{{ file }}">{{ file }}</a></li>
         {% endfor %}
     </ul>
 </body>
