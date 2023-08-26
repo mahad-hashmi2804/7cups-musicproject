@@ -168,9 +168,11 @@ def search(request):
 
 @login_required
 def song_requests(request):
-    # global THREADRUNNING
-    # if not THREADRUNNING:
-    #     Thread(target=update_songs).start()
+    global THREAD
+    if THREAD is None:
+        THREAD = Thread(target=update_songs).start()
+    elif not THREAD.is_alive():
+        THREAD = Thread(target=update_songs).start()
 
     if request.method == "GET":
         user_group = request.user.groups.all()
