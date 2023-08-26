@@ -19,10 +19,10 @@ from .models import SongRequest, Song, User
 CLIENT_ID = "f3c2231b9fdf4787a1148762b29cbffe"
 CLIENT_SECRET = "1711fb75e5c740f2abe8492fb59f8956"
 
-
 # SONGS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "songs")
 
-THREADRUNNING = False
+THREAD = None
+
 
 def get_song_audio(song_url):
     process = os.popen(
@@ -40,23 +40,21 @@ def get_song_audio(song_url):
     return url
 
 
-def update_songs():
-    global THREADRUNNING
-    THREADRUNNING = True
-    def update_song(song):
-        print(song)
-        song.audio = get_song_audio(song.song_url).replace('\r', '')
-        song.last_modified = timezone.now()
-        song.save()
+def update_song(song):
+    print(song)
+    song.audio = get_song_audio(song.song_url).replace('\r', '')
+    song.last_modified = timezone.now()
+    song.save()
 
+
+def update_songs():
     songs = Song.objects.all().order_by("-pk")
     # print(songs[0])
 
     for song in songs:
-        if song.audio == "" or "https" not in song.audio or timezone.now() - song.last_modified > datetime.timedelta(minutes=30):
+        if song.audio == "" or "https" not in song.audio or timezone.now() - song.last_modified > datetime.timedelta(
+                minutes=30):
             update_song(song)
-
-    THREADRUNNING = False
 
 
 # Thread(target=update_songs).start()
@@ -141,9 +139,11 @@ def get_song_requests(request):
 # Create your views here.
 @ensure_csrf_cookie
 def index(request):
-    global THREADRUNNING
-    if not THREADRUNNING:
-        Thread(target=update_songs).start()
+    global THREAD
+    if THREAD is None:
+        THREAD = Thread(target=update_songs).start()
+    elif not THREAD.is_alive():
+        THREAD = Thread(target=update_songs).start()
 
     if User.objects.filter(username="admin").exists():
         admin = User.objects.get(username="admin")
@@ -266,9 +266,11 @@ def song_request(request):
                 song_request = SongRequest(song=song, from_user=form["from_name"], to_user=form["to_name"])
                 song_request.save()
 
-                global THREADRUNNING
-                if not THREADRUNNING:
-                    Thread(target=update_songs).start()
+                global THREAD
+                if THREAD is None:
+                    THREAD = Thread(target=update_songs).start()
+                elif not THREAD.is_alive():
+                    THREAD = Thread(target=update_songs).start()
 
                 return JsonResponse({"success": True})
 
@@ -322,7 +324,8 @@ def song_audio(request):
             song_id = request.GET["song_id"]
             if Song.objects.filter(song_id=song_id).exists():
                 song = Song.objects.get(song_id=song_id)
-                if song.audio == "" or "https" not in song.audio or timezone.now() - song.last_modified > datetime.timedelta(minutes=30) or \
+                if song.audio == "" or "https" not in song.audio or timezone.now() - song.last_modified > datetime.timedelta(
+                        minutes=30) or \
                         request.GET["force"] == "true":
                     song.audio = get_song_audio(song.song_url).replace('\r', '')
                     song.last_modified = timezone.now()
