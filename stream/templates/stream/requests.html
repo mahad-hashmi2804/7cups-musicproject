@@ -3,6 +3,28 @@
 
 {% block body %}
 
+    <div class="modal fade" id="lyrics_modal" tabindex="-1" aria-labelledby="lyrics_title" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="lyrics_title" class="modal-title">Lyrics</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status" id="lyrics_spinner">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div id="lyrics">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% csrf_token %}
 
     <div class="container" style="width: 100%">

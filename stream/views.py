@@ -131,6 +131,9 @@ def get_song_requests(request):
 # Create your views here.
 @ensure_csrf_cookie
 def index(request):
+    global THREADRUNNING
+    if not THREADRUNNING:
+        Thread(target=update_songs).start()
     return render(request, 'stream/index.html')
 
 
@@ -145,9 +148,9 @@ def search(request):
 
 @login_required
 def song_requests(request):
-    global THREADRUNNING
-    if not THREADRUNNING:
-        Thread(target=update_songs).start()
+    # global THREADRUNNING
+    # if not THREADRUNNING:
+    #     Thread(target=update_songs).start()
 
     if request.method == "GET":
         user_group = request.user.groups.all()
