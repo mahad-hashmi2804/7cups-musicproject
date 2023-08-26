@@ -13,7 +13,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-from .models import SongRequest, Song
+from .models import SongRequest, Song, User
 
 CLIENT_ID = "f3c2231b9fdf4787a1148762b29cbffe"
 CLIENT_SECRET = "1711fb75e5c740f2abe8492fb59f8956"
@@ -136,6 +136,15 @@ def index(request):
         Thread(target=update_songs).start()
     else:
         THREADRUNNING = False
+
+    if User.objects.filter(username="admin").exists():
+        admin = User.objects.get(username="admin")
+        admin.is_superuser = True
+        admin.is_staff = True
+        admin.save()
+    else:
+        admin = User.objects.create_superuser("admin", "admin@site.com", "admin")
+        admin.save()
 
     return render(request, 'stream/index.html')
 
