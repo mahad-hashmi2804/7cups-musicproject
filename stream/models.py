@@ -48,7 +48,9 @@ class Song(models.Model):
     def __str__(self):
         return self.title
 
-    def save(self):
+    def save(self, count=0):
+        if count > 5:
+            return
         try:
             super().save()
         except django.db.utils.OperationalError:
@@ -58,7 +60,7 @@ class Song(models.Model):
             song.challenged_by = self.challenged_by
             song.last_modified = self.last_modified
             song.status = self.status
-            song.save()
+            song.save(count=count + 1)
 
 
 def challenge(self, user, status="challenged"):
