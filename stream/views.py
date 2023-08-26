@@ -134,6 +134,9 @@ def index(request):
     global THREADRUNNING
     if not THREADRUNNING:
         Thread(target=update_songs).start()
+    else:
+        THREADRUNNING = False
+
     return render(request, 'stream/index.html')
 
 
