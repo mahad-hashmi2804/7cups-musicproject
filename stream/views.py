@@ -31,8 +31,11 @@ def get_song_audio(song_url):
 
     output = process.read()
     print(output)
-    url = output.split(song_url)[1]
     process.close()
+    if "Killed" in output:
+        url = get_song_audio(song_url)
+    else:
+        url = output.split(song_url)[1]
 
     return url
 
