@@ -29,7 +29,9 @@ def get_song_audio(song_url):
         "spotdl url " + song_url
     )
 
-    url = process.read().split(song_url)[1]
+    output = process.read()
+    print(output)
+    url = output.split(song_url)[1]
     process.close()
 
     return url
