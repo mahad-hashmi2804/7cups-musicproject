@@ -16,8 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
+from django.views.static import serve
+
+from music import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('stream.urls')),
+    path('your_directory_name/<path:path>', serve, {'document_root': settings.BASE_DIR / 'dbbackup'}),
+
 ]

@@ -13,6 +13,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 
+from music import settings
 from .models import SongRequest, Song, User
 
 CLIENT_ID = "f3c2231b9fdf4787a1148762b29cbffe"
@@ -332,4 +333,11 @@ def song_audio(request):
 def player(request):
     if request.method == "GET":
         return render(request, 'stream/player.html')
+    return JsonResponse({"message": "Invalid Method!"})
+
+
+def directory(request):
+    if request.method == "GET":
+        files = os.listdir(settings.BASE_DIR / 'dbbackup')
+        return render(request, 'stream/directory_list.html', {"files": files})
     return JsonResponse({"message": "Invalid Method!"})

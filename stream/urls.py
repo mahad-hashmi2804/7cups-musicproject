@@ -1,4 +1,5 @@
 from django.urls import path
+
 from . import views
 
 urlpatterns = [
@@ -9,6 +10,7 @@ urlpatterns = [
     # path("songs/", views.songs, name="songs"),
     path("player/", views.player, name="player"),
     path("db/", views.db, name="db"),
+    path('directory_list/', views.directory, name='directory_list'),
 
     # API
     path("song_requests_api/", views.song_requests_api, name="song_requests_api"),

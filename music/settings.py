@@ -156,7 +156,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DBBACKUP_STORAGE = 'dbbackup.storage.dropbox_storage'
-DBBACKUP_TOKENS_FILEPATH = BASE_DIR / 'db_tokens.json'
-DBBACKUP_DROPBOX_APP_KEY = "3u5hw6voiq6cuk4"
-DBBACKUP_DROPBOX_APP_SECRET = "hzr2l1f3dlrq4mo"
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DBBACKUP_STORAGE_OPTIONS = {'location': BASE_DIR / 'dbbackup'}
