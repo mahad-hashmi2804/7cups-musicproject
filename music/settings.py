@@ -116,7 +116,7 @@ DATABASES = {
         'NAME': 'music',
         'USER': 'music',
         'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD'),
-        'HOST': 'dpg-cjksu5tk5scs73cro5kg-a',
+        'HOST': os.environ.get('DATABASE_URL'),
         'PORT': '5432',
     }
 }
