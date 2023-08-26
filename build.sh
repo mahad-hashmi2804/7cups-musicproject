@@ -11,4 +11,4 @@ python manage.py makemigrations
 python manage.py collectstatic --noinput
 python manage.py migrate
 
-python manage.py dbbackup
+python manage.py dbbackup -v 3 --noinput
