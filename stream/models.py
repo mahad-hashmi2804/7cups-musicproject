@@ -1,3 +1,4 @@
+import django.db.utils
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
 from django.db import models
 
@@ -18,6 +19,17 @@ class User(AbstractUser, AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
 
+    def save(self):
+        submitted = False
+
+        while not submitted:
+            try:
+                super().save()
+            except django.db.utils.OperationalError:
+                continue
+            else:
+                submitted = True
+
 
 class Song(models.Model):
     song_id = models.CharField(max_length=22, unique=True)
@@ -35,6 +47,17 @@ class Song(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self):
+        submitted = False
+
+        while not submitted:
+            try:
+                super().save()
+            except django.db.utils.OperationalError:
+                continue
+            else:
+                submitted = True
 
     def challenge(self, user, status="challenged"):
         if not self.reviewed_by.groups.filter(name="Song Approver").exists():
@@ -58,3 +81,14 @@ class SongRequest(models.Model):
 
     def __str__(self):
         return self.song.title
+
+    def save(self):
+        submitted = False
+
+        while not submitted:
+            try:
+                super().save()
+            except django.db.utils.OperationalError:
+                continue
+            else:
+                submitted = True
