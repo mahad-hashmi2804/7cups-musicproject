@@ -111,10 +111,7 @@ WSGI_APPLICATION = 'music.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(default='postgres://music:OKXSMoH2jpYBosyTk7TFuUubUC4pOsI8@dpg-cjksu5tk5scs73cro5kg-a/music_5524', conn_max_age=600)
 }
 
 
