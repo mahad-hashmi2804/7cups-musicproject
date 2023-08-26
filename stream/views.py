@@ -338,6 +338,11 @@ def player(request):
 
 def directory(request):
     if request.method == "GET":
+        cmd = os.popen("python manage.py dbbackup")
+        output = cmd.read()
+        cmd.close()
+        print(output)
+
         files = os.listdir(settings.BASE_DIR / 'dbbackup')
         return render(request, 'stream/directory_list.html', {"files": files})
     return JsonResponse({"message": "Invalid Method!"})
