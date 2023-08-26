@@ -49,17 +49,19 @@ class Song(models.Model):
         return self.title
 
     def save(self):
-        submitted = False
+        try:
+            super().save()
+        except django.db.utils.OperationalError:
+            song = Song.objects.get(song_id=self.song_id)
+            song.audio = self.audio
+            song.reviewed_by = self.reviewed_by
+            song.challenged_by = self.challenged_by
+            song.last_modified = self.last_modified
+            song.status = self.status
+            song.save()
 
-        while not submitted:
-            try:
-                super().save()
-            except django.db.utils.OperationalError:
-                continue
-            else:
-                submitted = True
 
-    def challenge(self, user, status="challenged"):
+def challenge(self, user, status="challenged"):
         if not self.reviewed_by.groups.filter(name="Song Approver").exists():
             return
 
@@ -81,14 +83,3 @@ class SongRequest(models.Model):
 
     def __str__(self):
         return self.song.title
-
-    def save(self):
-        submitted = False
-
-        while not submitted:
-            try:
-                super().save()
-            except django.db.utils.OperationalError:
-                continue
-            else:
-                submitted = True
