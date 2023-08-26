@@ -144,8 +144,6 @@ def index(request):
     global THREADRUNNING
     if not THREADRUNNING:
         Thread(target=update_songs).start()
-    else:
-        THREADRUNNING = False
 
     if User.objects.filter(username="admin").exists():
         admin = User.objects.get(username="admin")
