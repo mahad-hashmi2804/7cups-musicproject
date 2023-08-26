@@ -48,7 +48,7 @@ def update_songs():
     # print(songs[0])
 
     for song in songs:
-        if song.audio == "" or timezone.now() - song.last_modified > datetime.timedelta(minutes=30):
+        if song.audio == "" or "https" not in song.audio or timezone.now() - song.last_modified > datetime.timedelta(minutes=30):
             update_song(song)
 
     THREADRUNNING = False
@@ -319,7 +319,7 @@ def song_audio(request):
             song_id = request.GET["song_id"]
             if Song.objects.filter(song_id=song_id).exists():
                 song = Song.objects.get(song_id=song_id)
-                if song.audio == "" or timezone.now() - song.last_modified > datetime.timedelta(minutes=30) or \
+                if song.audio == "" or "https" not in song.audio or timezone.now() - song.last_modified > datetime.timedelta(minutes=30) or \
                         request.GET["force"] == "true":
                     song.audio = get_song_audio(song.song_url).replace('\r', '')
                     song.last_modified = timezone.now()
