@@ -73,7 +73,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Add whitenoise when debug = true
 # if DEBUG:
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-INSTALLED_APPS.insert(0, 'whitenoise.runserver_nostatic')
+# INSTALLED_APPS.insert(0, 'whitenoise.runserver_nostatic')
 STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 #
 # if not DEBUG:
