@@ -67,6 +67,8 @@ class Processing:
         self.get_token()
 
     def get_audio(self, song_url, force=False):
+        if song_url in self.audio_queue:
+            self.audio_queue.remove(song_url)
         if force:
             self.audio_queue.insert(0, song_url)
         else:
