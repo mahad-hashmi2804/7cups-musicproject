@@ -22,6 +22,7 @@ CLIENT_SECRET = "1711fb75e5c740f2abe8492fb59f8956"
 # SONGS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "songs")
 
 THREAD = None
+SONGS_THREAD = None
 
 
 def get_song_audio(song_url):
@@ -30,8 +31,8 @@ def get_song_audio(song_url):
     )
 
     output = process.read()
-    print(output)
     process.close()
+    print(output)
     if "Killed" in output:
         url = get_song_audio(song_url)
     else:
@@ -42,9 +43,7 @@ def get_song_audio(song_url):
 
 def update_song(song):
     print(song)
-    song.audio = get_song_audio(song.song_url).replace('\r', '')
-    song.last_modified = timezone.now()
-    song.save()
+    song.update(audio=get_song_audio(song.song_url).replace('\r', ''), last_modified = timezone.now())
 
 
 def update_songs():
@@ -53,8 +52,8 @@ def update_songs():
 
     for song in songs:
         if song.audio == "" or "https" not in song.audio or timezone.now() - song.last_modified > datetime.timedelta(
-                minutes=30):
-            update_song(song)
+                minutes=20):
+            Data.get_audio(song.song_url)
 
 
 # Thread(target=update_songs).start()
@@ -64,7 +63,19 @@ class Processing:
     def __init__(self):
         self.timestamp = None
         self.token = None
+        self.audio_queue = []
         self.get_token()
+
+    def get_audio(self, song_url, force=False):
+        if force:
+            self.audio_queue.insert(0, song_url)
+        else:
+            self.audio_queue.append(song_url)
+        global SONGS_THREAD
+        if SONGS_THREAD is None:
+            SONGS_THREAD = Thread(target=self.process_audio_queue).start()
+        elif not SONGS_THREAD.is_alive():
+            SONGS_THREAD = Thread(target=self.process_audio_queue).start()
 
     def get_token(self):
         url = "https://accounts.spotify.com/api/token"
@@ -97,6 +108,16 @@ class Processing:
         headers = {"Authorization": "Bearer " + self.token}
         response = requests.get(url, headers=headers)
         return response.json()
+
+    def process_audio_queue(self):
+        if len(self.audio_queue) > 0:
+            url = self.audio_queue.pop(0)
+            print(url)
+            audio = get_song_audio(url)
+            print(audio)
+            Song.objects.filter(song_url=url).update(audio=audio, last_modified=timezone.now())
+
+            self.process_audio_queue()
 
 
 Data = Processing()
@@ -268,11 +289,7 @@ def song_request(request):
                 song_request = SongRequest(song=song, from_user=form["from_name"], to_user=form["to_name"])
                 song_request.save()
 
-                global THREAD
-                if THREAD is None:
-                    THREAD = Thread(target=update_songs).start()
-                elif not THREAD.is_alive():
-                    THREAD = Thread(target=update_songs).start()
+                Data.get_audio(song.song_url)
 
                 return JsonResponse({"success": True})
 
@@ -327,11 +344,8 @@ def song_audio(request):
             if Song.objects.filter(song_id=song_id).exists():
                 song = Song.objects.get(song_id=song_id)
                 if song.audio == "" or "https" not in song.audio or timezone.now() - song.last_modified > datetime.timedelta(
-                        minutes=30) or \
-                        request.GET["force"] == "true":
-                    song.audio = get_song_audio(song.song_url).replace('\r', '')
-                    song.last_modified = timezone.now()
-                    song.save()
+                        minutes=30) or request.GET["force"] == "true":
+                    Data.get_audio(song.song_url, force=True)
 
                 return JsonResponse({"audio": song.audio})
         return JsonResponse({"message": "Something went wrong!"})

@@ -1,6 +1,7 @@
 import django.db.utils
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
 from django.db import models
+from django.db import connection
 
 
 # Create your models here.
@@ -18,17 +19,6 @@ class User(AbstractUser, AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
-
-    def save(self):
-        submitted = False
-
-        while not submitted:
-            try:
-                super().save()
-            except django.db.utils.OperationalError:
-                continue
-            else:
-                submitted = True
 
 
 class Song(models.Model):
@@ -54,6 +44,9 @@ class Song(models.Model):
         try:
             super().save()
         except django.db.utils.OperationalError:
+            connection.connection.close()
+            connection.connection = None
+
             song = Song.objects.get(song_id=self.song_id)
             song.audio = self.audio
             song.reviewed_by = self.reviewed_by
