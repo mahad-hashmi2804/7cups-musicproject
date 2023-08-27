@@ -289,7 +289,7 @@ def song_request(request):
                 song_request = SongRequest(song=song, from_user=form["from_name"], to_user=form["to_name"])
                 song_request.save()
 
-                Data.get_audio(song.song_url)
+                Data.get_audio(song.song_url, force=True)
 
                 return JsonResponse({"success": True})
 
