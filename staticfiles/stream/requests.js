@@ -121,6 +121,7 @@ function addRequests(requests) {
         let row1 = document.createElement("div");
         row1.classList.add("row");
         row1.classList.add("mb-2");
+        row1.classList.add("metadata-row");
 
         let img_col = document.createElement("div");
         img_col.classList.add("col");

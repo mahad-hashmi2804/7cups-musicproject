@@ -37,7 +37,8 @@
             </div>
             <div class="container my-2 content-align-center">
                 <h3>Filters</h3>
-                <button class="btn btn-outline-primary" id="refresh_btn"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                <button class="btn btn-outline-primary" id="refresh_btn"><i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
                 <button class="btn btn-outline-primary filter_btn" data-p="all" data-v="all">All</button>
                 <button class="btn btn-outline-warning filter_btn" data-p="status" data-v="pending"><i
                         class="bi bi-clock-fill"></i> Pending
@@ -48,13 +49,17 @@
                 <button class="btn btn-outline-danger filter_btn" data-p="status" data-v="rejected"><i
                         class="bi bi-x-lg"></i> Rejected
                 </button>
-                <div class="form-group fs-5 align-self-center mx-2" style="display: inline-block;">
-                    <input type="checkbox" id="played" name="played" value="true">
-                    <label for="played"> Include played songs</label>
-                </div>
-                <div class="form-group fs-5 align-self-center mx-2" style="display: inline-block;">
-                    <input type="checkbox" id="spotify" name="spotify" value="true">
-                    <label for="played"> Show "Open on Spotify" button</label>
+                <br>
+                <div class="check-div mt-2">
+                    <div class="form-group fs-5 align-self-center mx-2 me-3 d-flex align-items-start" style="display: inline-block;">
+                        <input type="checkbox" id="played" name="played" value="true" class="form-check-input mt-1 me-1" style="min-width: 20px;">
+                        <label for="played"> Include played songs</label>
+                    </div>
+                    <div class="form-group fs-5 align-self-center mx-2 d-flex align-items-start"
+                         style="display: inline-block;">
+                        <input type="checkbox" checked id="spotify" name="spotify" value="true" class="form-check-input mt-1 me-1" style="min-width: 20px;">
+                        <label for="spotify"> Show "Open on Spotify" button</label>
+                    </div>
                 </div>
             </div>
 

@@ -75,14 +75,23 @@ li.list-group-item {
     }
 
     .song-img {
-        max-width: 64px;
-        max-height: 64px;
+        max-width: 100px;
+        max-height: 100px;
+        margin-top: 5px;
+        border-radius: 5px;
     }
 
     li.list-group-item {
         width: 100%;
         padding: 0;
     }
+
+    .metadata-row {
+        margin-left: 1px !important;
+        margin-top: 5px !important;
+        width: 100% !important;
+    }
+
 }
 
 /* For Tablets */
@@ -101,8 +110,8 @@ li.list-group-item {
 
 
     .song-img {
-        max-width: 100px;
-        max-height: 100px;
+        max-width: 150px;
+        max-height: 150px;
     }
 
     li.list-group-item {
