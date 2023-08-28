@@ -6,9 +6,11 @@
 POST https://accounts.spotify.com/api/token
 Content-Type: application/x-www-form-urlencoded
 
-grant_type = client_credentials &
+grant_type = authorization_code &
 client_id = f3c2231b9fdf4787a1148762b29cbffe &
-client_secret = 1711fb75e5c740f2abe8492fb59f8956
+client_secret = 1711fb75e5c740f2abe8492fb59f8956 &
+code = AQAWkY7Cteh-PF4N6FzIBKNMBMEWkaGBSiqalLHPhGpB7uuJTOksZ1LGJElDaCAo0cg_r-JxXQxTI2I0ZVwpzwH_PFG9p1ezs7o42EHOvw3QsANnoL4k4YyzIBaIF6IoIArWzq_re2nPJWKbd0Sk3ut9LaND_1_k4pyAUbOn3t7Cm1zKDUGoRu9euMt_I_eAIxD6mHfy8IjDYUYhFBmuI9jHm6ZbTW2RQSHrRh6U3aXWUNldXos74UWmPUTM2TsrxhtebaGpmZSf &
+redirect_uri = https://sevencups.onrender.com
 
 ###
 

@@ -1,7 +1,7 @@
 import django.db.utils
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
-from django.db import models
 from django.db import connection
+from django.db import models
 
 
 # Create your models here.
@@ -30,6 +30,7 @@ class Song(models.Model):
     image64 = models.CharField(max_length=100, blank=True)
     song_url = models.CharField(max_length=100)
     status = models.CharField(max_length=100, default="pending")
+    added_to_playlist = models.BooleanField(default=False)
     last_modified = models.DateTimeField(auto_now=True)
     audio = models.TextField(blank=True)
     reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="reviews")
@@ -55,15 +56,17 @@ class Song(models.Model):
             song.status = self.status
             song.save(count=count + 1)
 
+    def challenge(self, user, status="challenged"):
+        if self.reviewed_by.groups.filter(name="Song Approver").exists():
+            self.status = "challenged"
+            if not user.groups.filter(name="Song Approver").exists():
+                self.status = status
+                self.reviewed_by = user
 
-def challenge(self, user, status="challenged"):
-        if not self.reviewed_by.groups.filter(name="Song Approver").exists():
-            return
-
-        self.status = "challenged"
-        if not user.groups.filter(name="Song Approver").exists():
-            self.status = status
-            self.reviewed_by = user
+        elif self.reviewed_by.groups.filter(name="DJ").exists():
+            if user.groups.filter(name="Project Leader").exists():
+                self.status = status
+                self.reviewed_by = user
 
         self.challenged_by = user
         self.save()

@@ -18,6 +18,9 @@ from .models import SongRequest, Song, User
 CLIENT_ID = "f3c2231b9fdf4787a1148762b29cbffe"
 CLIENT_SECRET = "1711fb75e5c740f2abe8492fb59f8956"
 
+CLIENT_ID = os.environ.get("SPOTIFY_CLIENT_ID")
+CLIENT_SECRET = os.environ.get("SPOTIFY_CLIENT_SECRET")
+
 # SONGS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "songs")
 
 THREAD = None
@@ -107,13 +110,18 @@ class Processing:
         self.timestamp = None
         self.token = None
         self.audio_queue = []
+        self.refresh_token = "AQBb3vE-CQRBF4MD-2aegamUOkriAKrCpdwKYfedE5SO23qTEni4aOhKqJCE_kjXDPWFNe4dZvccLVB2lILiwWDBzI3DPqaa1bfmdbqOs23xf65rhYsLyai2i39-TGcwhNQ"
         self.get_token()
 
     def get_token(self):
         url = "https://accounts.spotify.com/api/token"
-        data = {"grant_type": "client_credentials"}
-        response = requests.post(url, data=data, auth=(CLIENT_ID, CLIENT_SECRET))
-        self.token = response.json()["access_token"]
+        data = {"grant_type": "refresh_token", "redirect_uri": "https://sevencups.onrender.com",
+                "refresh_token": self.refresh_token}
+        response = requests.post(url, data=data, auth=(CLIENT_ID, CLIENT_SECRET)).json()
+        print(response)
+        self.token = response["access_token"]
+        if "refresh_token" in response:
+            self.refresh_token = response["refresh_token"]
 
         self.timestamp = datetime.datetime.now()
 
@@ -139,6 +147,19 @@ class Processing:
         url = "https://api.spotify.com/v1/tracks/" + song_id
         headers = {"Authorization": "Bearer " + self.token}
         response = requests.get(url, headers=headers)
+        return response.json()
+
+    def song_to_playlist(self, song_id, delete=False):
+        self.check_token()
+
+        url = "https://api.spotify.com/v1/playlists/4EO6RXjlbJ2T8Fw7L6YTMu/tracks"
+        headers = {"Authorization": "Bearer " + self.token, "Content-Type": "application/json"}
+        params = {"uris": "spotify:track:" + song_id}
+        if delete:
+            params = {"tracks": [{"uri": "spotify:track:" + song_id}]}
+            response = requests.delete(url, headers=headers, json=params)
+        else:
+            response = requests.post(url, headers=headers, params=params)
         return response.json()
 
 
@@ -340,6 +361,15 @@ def song_review(request):
                         song.challenge(request.user)
                     else:
                         song.challenge(request.user, status=status[form["status"]])
+
+                if song.status == "approved" and not song.added_to_playlist:
+                    Data.song_to_playlist(song.song_id)
+                    song.added_to_playlist = True
+                    song.save()
+                elif song.status == "rejected" or song.status == "challenged":
+                    Data.song_to_playlist(song.song_id, delete=True)
+                    song.added_to_playlist = False
+                    song.save()
 
                 return JsonResponse({"status": 201, "action": song.status})
         return JsonResponse({"status": 404, "success": False})

@@ -1,0 +1,20 @@
+###
+
+# curl -X POST "https://accounts.spotify.com/api/token"
+#     -H "Content-Type: application/x-www-form-urlencoded"
+#     -d "grant_type=client_credentials&client_id=your-client-id&client_secret=your-client-secret"
+DELETE https://api.spotify.com/v1/playlists/4EO6RXjlbJ2T8Fw7L6YTMu/tracks
+Content-Type: application/json &
+Authorization: Bearer BQADZEJoTjHXcK2Q24SmjUAr2oE9Y7LCcLhzhGTKtKf5dF3DGyj9QbHyiLAC1Slqhuj7JAUR5SNR6XkgNFMoPBPzzT0K9BvzmYnW9yiwrcgSuI6a9PTaonv745IbSPfpJj0L5QDkRj5BkOk9O2aEb11AodmAOzhKhnsf7ZIGP3nqJ2GNzbMI3osPx-B-xUcgkA0ZJAXUg6cXsWN-XBNprqC2nssn5bzJ83OaxFJA25f0nuh7qVU
+
+{
+  "tracks": [
+    {
+      "uri": "spotify:track:5w52BJAqGkV1ewaCVLmjhi"
+    }
+  ]
+}
+
+
+###
+
