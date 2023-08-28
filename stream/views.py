@@ -1,7 +1,6 @@
 import datetime
 import json
 import os
-from threading import Thread
 
 import requests
 from django.contrib import messages
@@ -25,38 +24,82 @@ THREAD = None
 SONGS_THREAD = None
 
 
+def get_results(search_term: str):
+    """
+    Get results from slider.kz
+
+    ### Arguments
+    - search_term: The search term to search for.
+    - args: Unused.
+    - kwargs: Unused.
+
+    ### Returns
+    - A list of slider.kz results if found, None otherwise.
+    """
+
+    search_results = None
+    max_retries = 0
+    # print("Here")
+
+    while not search_results and max_retries < 3:
+        try:
+            search_response = requests.get(
+                url="https://slider.kz/vk_auth.php?q=" + search_term,
+                headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0"},
+                timeout=15,
+            )
+
+            # Check if the response is valid
+            if len(search_response.text) > 30:
+                # Set the search results to the json response
+                # effectively breaking out of the loop
+                search_results = search_response.json()
+
+        except Exception as exc:
+            print(
+                "Slider.kz search failed for query %s with error: %s. Retrying...",
+                search_term,
+                exc,
+            )
+        # print("In loop")
+
+        max_retries += 1
+
+    if not search_results:
+        print("Slider.kz search failed for query %s", search_term)
+        return []
+
+    results = []
+    for result in search_results["audios"][""]:
+        # urls from slider.kz sometimes are relative, so we need to add the domain
+        if "https://" not in result["url"]:
+            result["url"] = "https://slider.kz/" + result["url"]
+
+        results.append(result)
+
+    return results[0]
+
+
 def get_song_audio(song_url):
-    process = os.popen(
-        "spotdl url " + song_url
-    )
+    song = Song.objects.get(song_url=song_url)
+    results = get_results(song.title + " " + song.artists)
+    url = ""
 
-    output = process.read()
-    process.close()
-    print(output)
-    if "Killed" in output:
-        url = get_song_audio(song_url)
-    else:
-        url = output.split(song_url)[1]
+    if results:
+        url = results["url"].strip().replace('\r', '').replace(" ", "").replace("\n", "")
 
+    print(url)
     return url
 
 
 def update_song(song):
     print(song)
-    song.update(audio=get_song_audio(song.song_url).replace('\r', '').replace("_", "").replace(" ", "").replace("\n", ""), last_modified = timezone.now())
+    results = get_song_audio(song.song_url)
 
-
-def update_songs():
-    songs = Song.objects.all().order_by("-pk")
-    # print(songs[0])
-
-    for song in songs:
-        if song.audio == "" or "https" not in song.audio or timezone.now() - song.last_modified > datetime.timedelta(
-                minutes=20):
-            Data.get_audio(song.song_url)
-
-
-# Thread(target=update_songs).start()
+    song.audio = results
+    song.last_modified = timezone.now()
+    song.save()
 
 
 class Processing:
@@ -65,19 +108,6 @@ class Processing:
         self.token = None
         self.audio_queue = []
         self.get_token()
-
-    def get_audio(self, song_url, force=False):
-        if song_url in self.audio_queue:
-            self.audio_queue.remove(song_url)
-        if force:
-            self.audio_queue.insert(0, song_url)
-        else:
-            self.audio_queue.append(song_url)
-        global SONGS_THREAD
-        if SONGS_THREAD is None:
-            SONGS_THREAD = Thread(target=self.process_audio_queue).start()
-        elif not SONGS_THREAD.is_alive():
-            SONGS_THREAD = Thread(target=self.process_audio_queue).start()
 
     def get_token(self):
         url = "https://accounts.spotify.com/api/token"
@@ -110,16 +140,6 @@ class Processing:
         headers = {"Authorization": "Bearer " + self.token}
         response = requests.get(url, headers=headers)
         return response.json()
-
-    def process_audio_queue(self):
-        if len(self.audio_queue) > 0:
-            url = self.audio_queue.pop(0)
-            print(url)
-            audio = get_song_audio(url)
-            print(audio)
-            Song.objects.filter(song_url=url).update(audio=audio, last_modified=timezone.now())
-
-            self.process_audio_queue()
 
 
 Data = Processing()
@@ -162,12 +182,6 @@ def get_song_requests(request):
 # Create your views here.
 @ensure_csrf_cookie
 def index(request):
-    global THREAD
-    if THREAD is None:
-        THREAD = Thread(target=update_songs).start()
-    elif not THREAD.is_alive():
-        THREAD = Thread(target=update_songs).start()
-
     if User.objects.filter(username="admin").exists():
         admin = User.objects.get(username="admin")
         admin.is_superuser = True
@@ -191,12 +205,6 @@ def search(request):
 
 @login_required
 def song_requests(request):
-    global THREAD
-    if THREAD is None:
-        THREAD = Thread(target=update_songs).start()
-    elif not THREAD.is_alive():
-        THREAD = Thread(target=update_songs).start()
-
     if request.method == "GET":
         user_group = request.user.groups.all()
         if user_group.count() == 0:
@@ -287,11 +295,10 @@ def song_request(request):
                     song = Song(song_id=song_id, title=song_title, artists=artists, song_url=song_url,
                                 image600=image600, image300=image300, image64=image64)
                     song.save()
+                    update_song(song)
 
                 song_request = SongRequest(song=song, from_user=form["from_name"], to_user=form["to_name"])
                 song_request.save()
-
-                Data.get_audio(song.song_url, force=True)
 
                 return JsonResponse({"success": True})
 
@@ -345,9 +352,8 @@ def song_audio(request):
             song_id = request.GET["song_id"]
             if Song.objects.filter(song_id=song_id).exists():
                 song = Song.objects.get(song_id=song_id)
-                if song.audio == "" or "https" not in song.audio or timezone.now() - song.last_modified > datetime.timedelta(
-                        minutes=30) or request.GET["force"] == "true":
-                    Data.get_audio(song.song_url, force=True)
+                if "https" not in song.audio or request.GET["force"] == "true":
+                    update_song(song)
 
                 return JsonResponse({"audio": song.audio})
         return JsonResponse({"message": "Something went wrong!"})

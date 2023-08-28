@@ -20,7 +20,17 @@ class UsersAdmin(UserAdmin):
     )
 
 
+class SongRequestAdmin(admin.ModelAdmin):
+    list_display = ("song", "played")
+    list_filter = ("from_user", "song__status", "played")
+    search_fields = ("song__title", "song__artists")
 
-admin.site.register(SongRequest)
-admin.site.register(Song)
+
+class SongAdmin(admin.ModelAdmin):
+    list_display = ("title", "artists", "status", "last_modified", "reviewed_by", "challenged_by", "audio")
+    list_filter = ("status", "last_modified")
+    search_fields = ("title", "artists", "reviewed_by__username", "challenged_by__username")
+
+admin.site.register(SongRequest, SongRequestAdmin)
+admin.site.register(Song, SongAdmin)
 admin.site.register(User, UsersAdmin)

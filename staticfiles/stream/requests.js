@@ -385,8 +385,6 @@ function getLyrics(id, title) {
     fetch('https://spotify-lyric-api.herokuapp.com/?trackid=' + id)
 
         .then(response => {
-
-            // console.log(result);
             console.log(response.status);
 
             if (response.status === 200) {
@@ -449,7 +447,6 @@ function getRequests() {
     fetch('/song_requests_api/' + params, {
         method: 'GET',
     }).then(response => response.json()).then(response => {
-        console.log(response);
         if (response.status === 200) {
             addRequests(response.song_requests);
         } else {
@@ -473,8 +470,6 @@ function addRequests(requests) {
 
     // Clear the results list
     request_list.innerHTML = "";
-
-    console.log(requests);
 
     // Add each request to the results list
     requests.forEach(request => {
@@ -629,7 +624,7 @@ function addRequests(requests) {
         player.style.display = "none";
 
         let source = document.createElement("source");
-        source.type = "audio/webm";
+        source.type = "audio/mpeg";
         source.dataset.id = request.song__song_id;
 
         let spinner = document.createElement("div");
@@ -677,8 +672,16 @@ function playSong(id, force) {
 
     getSong(source.dataset.id, force).then(song => {
         let force_btn = li.querySelector(".btn-secondary");
-        // console.log(force_btn);
-        source.src = song.audio.replaceAll("_", "").replaceAll(" ", "").replaceAll("\n", "");
+
+        console.log(song.audio);
+
+        if (song.audio === "") {
+            alert("This song is not available! Please use lyrics for review.");
+            player_row.style.display = "none";
+            return;
+        }
+
+        source.src = song.audio;
         player.load();
 
         document.querySelectorAll(".player-row").forEach(player => {
@@ -704,7 +707,7 @@ function playSong(id, force) {
                 force_btn.style.display = "inline-block";
                 clearInterval(interval);
             }
-        }, 3000);
+        }, 10000);
     });
 }
 
