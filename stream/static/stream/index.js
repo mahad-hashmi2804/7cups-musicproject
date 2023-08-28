@@ -43,6 +43,7 @@ function search() {
 
                 let img = document.createElement("img");
                 img.src = song.album['images'][2]['url'];
+                img.classList.add("song-img");
                 img.width = 64;
                 img.height = 64;
                 img.style.margin = "2px";

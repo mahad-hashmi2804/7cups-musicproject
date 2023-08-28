@@ -132,14 +132,20 @@ function addRequests(requests) {
 
         let img = document.createElement("img");
         img.src = request.song__image300;
+        img.style.minHeight = mobile ? "100px" : "200px";
+        img.style.minWidth = mobile ? "100px" : "200px";
         img.classList.add("song-img");
         img_col.appendChild(img);
 
         let title_col = document.createElement("div");
-        if (screen.width > 540) {
-            title_col.classList.add("col-md-9");
-        } else {
+        if (mobile) {
             title_col.classList.add("col");
+        } else if (screen.width < 1000) {
+            title_col.classList.add("col-7");
+        } else if (screen.width < 1200) {
+            title_col.classList.add("col-8");
+        } else {
+            title_col.classList.add("col-9");
         }
         title_col.classList.add("ms-2");
 
@@ -300,7 +306,11 @@ function addRequests(requests) {
         player_row.style.display = "none";
 
         li.appendChild(row1);
-        li.appendChild(row2);
+        if (mobile){
+            li.appendChild(row2);
+        } else {
+            title_col.appendChild(row2);
+        }
         li.appendChild(player_row);
 
         request_list.append(li);

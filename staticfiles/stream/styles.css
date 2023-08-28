@@ -13,8 +13,8 @@ input.form-control {
 .search-button {
     z-index: 10;
     position: absolute;
-    right: 0;
-    top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
     border-radius: 0 20px 20px 0;
     height: 100%;
 }
@@ -75,8 +75,10 @@ li.list-group-item {
     }
 
     .song-img {
-        max-width: 64px;
-        max-height: 64px;
+        max-width: 100px;
+        max-height: 100px;
+        margin-top: 5px;
+        border-radius: 5px;
     }
 
     li.list-group-item {
@@ -85,7 +87,7 @@ li.list-group-item {
     }
 
     .metadata-row {
-        margin-left: 15px !important;
+        margin-left: 1px !important;
         margin-top: 5px !important;
         width: 100% !important;
     }
@@ -108,8 +110,9 @@ li.list-group-item {
 
 
     .song-img {
-        max-width: 100px;
-        max-height: 100px;
+        max-width: 150px;
+        max-height: 150px;
+        border-radius: 5px;
     }
 
     li.list-group-item {

@@ -74,17 +74,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Add whitenoise when debug = true
 # if DEBUG:
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-INSTALLED_APPS.insert(0, 'whitenoise.runserver_nostatic')
-# STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
-#
-# if not DEBUG:
-#     # Tell Django to copy statics to the `staticfiles` directory
-#     # in your application directory on Render.
-#     # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-#
-#     # Turn on WhiteNoise storage backend that takes care of compressing static files
-#     # and creating unique names for each version so they can safely be cached forever.
-#     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# INSTALLED_APPS.insert(0, 'whitenoise.runserver_nostatic')
+STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 
 ROOT_URLCONF = 'music.urls'
 
@@ -113,7 +104,7 @@ WSGI_APPLICATION = 'music.wsgi.application'
 DATABASES = {
     'default':
         dj_database_url.config(
-            default='postgres://music:OKXSMoH2jpYBosyTk7TFuUubUC4pOsI8@dpg-cjksu5tk5scs73cro5kg-a.oregon-postgres.render.com/music_5524')
+            default=os.environ.get('DATABASE_URL'))
 
 }
 
