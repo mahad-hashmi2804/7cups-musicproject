@@ -592,11 +592,19 @@ function addRequests(requests) {
         lyrics_btn.dataset.bsToggle = "modal";
         lyrics_btn.dataset.bsTarget = "#lyrics_modal";
 
+        let spotify_btn = document.createElement("a");
+        spotify_btn.classList.add("btn");
+        spotify_btn.classList.add("btn-success");
+        spotify_btn.href = request.song__song_url;
+        spotify_btn.innerHTML = "<i class='bi bi-box-arrow-up-right'></i> Open on Spotify";
+        spotify_btn.target = "_blank";
+
         row2.appendChild(play_btn);
         row2.appendChild(force_btn);
         row2.appendChild(approve_btn);
         row2.appendChild(deny_btn);
         row2.appendChild(lyrics_btn);
+        row2.appendChild(spotify_btn);
 
         if (document.querySelector("#user_type").value !== "Song Approver" && request.played == false) {
             let played_btn = document.createElement("button");
@@ -681,13 +689,16 @@ function playSong(id, force) {
             return;
         }
 
-        source.src = song.audio;
-        player.load();
-
         document.querySelectorAll(".player-row").forEach(player => {
             player.style.display = "none";
-            player.querySelector("video").pause();
+            player.querySelector("source").src = "";
+            let video = player.querySelector("video");
+            video.pause();
+            video.load();
         });
+
+        source.src = song.audio;
+        player.load();
 
         player_row.style.display = "block";
         spinner.style.display = "none"
