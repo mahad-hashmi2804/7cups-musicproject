@@ -678,7 +678,7 @@ function playSong(id, force) {
     getSong(source.dataset.id, force).then(song => {
         let force_btn = li.querySelector(".btn-secondary");
         // console.log(force_btn);
-        source.src = song.audio;
+        source.src = song.audio.replaceAll("_", "").replaceAll(" ", "").replaceAll("\n", "");
         player.load();
 
         document.querySelectorAll(".player-row").forEach(player => {

@@ -43,7 +43,7 @@ def get_song_audio(song_url):
 
 def update_song(song):
     print(song)
-    song.update(audio=get_song_audio(song.song_url).replace('\r', ''), last_modified = timezone.now())
+    song.update(audio=get_song_audio(song.song_url).replace('\r', '').replace("_", "").replace(" ", "").replace("\n", ""), last_modified = timezone.now())
 
 
 def update_songs():
