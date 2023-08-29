@@ -260,3 +260,5 @@ search_input.addEventListener("input", () => {
         }
     }, 300);
 });
+
+submit_btn.addEventListener("click", submit);
