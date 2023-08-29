@@ -276,6 +276,15 @@ def song_requests_api(request):
     if request.method == "GET":
         song_requests = get_song_requests(request)
 
+        count = song_requests.count()
+
+        if count > 50:
+            song_requests = song_requests[:50]
+        elif count == 1:
+            pass
+        elif count % 2:
+            song_requests = song_requests[:count - 1]
+
         return JsonResponse({"status": 200, "song_requests": list(song_requests)})
 
     return JsonResponse({"message": "Invalid Method!"})

@@ -90,7 +90,22 @@ function getRequests() {
         method: 'GET',
     }).then(response => response.json()).then(response => {
         if (response.status === 200) {
-            addRequests(response.song_requests);
+            let requests0 = []
+            let requests1 = []
+
+            response.song_requests.forEach((request, i) => {
+                if (i % 2) {
+                    requests1.push(request);
+                } else {
+                    requests0.push(request);
+                }
+            });
+
+            let requests = requests0.concat(requests1);
+
+            addRequests(requests);
+        } else if (response.status === 500) {
+            getRequests();
         } else {
             alert("Something went wrong! Please refresh the page and try again.");
             window.location.reload();
@@ -113,7 +128,7 @@ function addRequests(requests) {
     // Clear the results list
     request_list.innerHTML = "";
 
-    const mobile = screen.width < 540;
+    const mobile = screen.width <= 540;
 
     // Add each request to the results list
     requests.forEach(request => {
@@ -140,12 +155,10 @@ function addRequests(requests) {
         let title_col = document.createElement("div");
         if (mobile) {
             title_col.classList.add("col");
-        } else if (screen.width < 1000) {
-            title_col.classList.add("col-7");
         } else if (screen.width < 1200) {
-            title_col.classList.add("col-8");
+            title_col.classList.add("col-5");
         } else {
-            title_col.classList.add("col-9");
+            title_col.classList.add("col-6");
         }
         title_col.classList.add("ms-2");
 
@@ -184,7 +197,12 @@ function addRequests(requests) {
         played.innerHTML = "Has ";
         played.innerHTML += request.played ? "" : "not ";
         played.innerHTML += "been played";
-        played.classList.add("text-muted");
+        if (request.played) {
+            played.classList.add("text-success");
+            played.classList.add("fw-bold");
+        } else {
+            played.classList.add("text-muted");
+        }
         // played.classList.add("title");
         played.classList.add("row");
         title_col.appendChild(played);
@@ -203,27 +221,29 @@ function addRequests(requests) {
 
         let approve_btn = document.createElement("button");
         approve_btn.classList.add("btn");
-        approve_btn.classList.add("btn-success");
-        // approve_btn.classList.add("col");
-        approve_btn.innerHTML = "<i class='bi bi-check-lg'></i> Approve";
+        approve_btn.classList.add("btn-mobile");
+        approve_btn.classList.add("text-success");
+        approve_btn.title = "Approve";
+        approve_btn.innerHTML = "<i class='bi bi-check-lg'></i>";
         approve_btn.onclick = () => {
             review_song("approve", request.song__song_id)
         };
 
         let deny_btn = document.createElement("button");
         deny_btn.classList.add("btn");
-        deny_btn.classList.add("btn-danger");
-        // deny_btn.classList.add("col");
-        deny_btn.innerHTML = "<i class='bi bi-x-lg'></i> Deny";
+        deny_btn.classList.add("btn-mobile");
+        deny_btn.classList.add("text-danger");
+        deny_btn.title = "Reject";
+        deny_btn.innerHTML = "<i class='bi bi-x-lg'></i>";
         deny_btn.onclick = () => {
             review_song("reject", request.song__song_id)
         };
 
         let play_btn = document.createElement("button");
         play_btn.classList.add("btn");
-        play_btn.classList.add("btn-primary");
-        // play_btn.classList.add("col");
-        play_btn.innerHTML = "<i class='bi bi-play-fill'></i>  Play Song";
+        play_btn.classList.add("btn-mobile");
+        play_btn.innerHTML = "<i class='bi bi-play-fill'></i>";
+        play_btn.title = "Play Song";
         play_btn.onclick = () => {
             // force_btn.style.display = "inline-block";
             playSong(request.id, false)
@@ -238,10 +258,11 @@ function addRequests(requests) {
         };
         force_btn.style.display = "none";
 
-        let lyrics_btn = document.createElement("button");
+        let lyrics_btn = document.createElement("a");
+        lyrics_btn.href = "#";
         lyrics_btn.classList.add("btn");
         lyrics_btn.classList.add("btn-secondary");
-        lyrics_btn.innerHTML = "<i class=\"bi bi-body-text\"></i> View Song Lyrics";
+        lyrics_btn.innerHTML = "View Song Lyrics";
         lyrics_btn.onclick = () => {
             getLyrics(request.song__song_id, request.song__title);
         };
@@ -252,30 +273,45 @@ function addRequests(requests) {
         spotify_btn.classList.add("btn");
         spotify_btn.classList.add("btn-success");
         spotify_btn.href = request.song__song_url;
-        spotify_btn.innerHTML = "<i class='bi bi-box-arrow-up-right'></i> Open on Spotify";
+        spotify_btn.innerHTML = "Open on Spotify <i class='bi bi-spotify'></i>";
         spotify_btn.target = "_blank";
 
         row2.appendChild(play_btn);
         row2.appendChild(force_btn);
         row2.appendChild(approve_btn);
         row2.appendChild(deny_btn);
-        row2.appendChild(lyrics_btn);
 
-        if (document.querySelector("#spotify").checked) {
-            row2.appendChild(spotify_btn);
-        }
+        let played_btn = document.createElement("button");
+        played_btn.classList.add("btn");
+        played_btn.classList.add("btn-info");
+        played_btn.innerHTML = "Mark as Played";
+        played_btn.onclick = () => {
+            review_song("played", request.id);
+        };
+
+        let ul = document.createElement("ul");
+        ul.classList.add("dropdown-menu");
+
+        let buttons = [lyrics_btn, spotify_btn];
 
         if (document.querySelector("#user_type").value !== "Song Approver" && request.played == false) {
-            let played_btn = document.createElement("button");
-            played_btn.classList.add("btn");
-            played_btn.classList.add("btn-info");
-            played_btn.style.color = "white";
-            played_btn.innerHTML = "Mark as Played";
-            played_btn.onclick = () => {
-                review_song("played", request.id);
-            }
-            row2.appendChild(played_btn);
+            buttons.push(played_btn);
         }
+
+        buttons.forEach(button => {
+            let li = document.createElement("li");
+            button.classList.add("dropdown-item");
+            li.appendChild(button);
+            ul.appendChild(li);
+        });
+
+        let dropdown = document.createElement("button");
+        dropdown.classList.add("btn");
+        dropdown.classList.add("btn-mobile");
+        dropdown.dataset.bsToggle = "dropdown";
+        dropdown.innerHTML = "<i class='bi bi-three-dots'></i>";
+        row2.appendChild(dropdown);
+        row2.appendChild(ul);
 
         let player_row = document.createElement("div");
         player_row.classList.add("row");
@@ -306,7 +342,7 @@ function addRequests(requests) {
         player_row.style.display = "none";
 
         li.appendChild(row1);
-        if (mobile){
+        if (mobile) {
             li.appendChild(row2);
         } else {
             title_col.appendChild(row2);

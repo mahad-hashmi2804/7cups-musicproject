@@ -60,6 +60,12 @@ li.list-group-item {
     opacity: 0.4;
 }
 
+.btn-mobile {
+    font-size: 2rem;
+    font-weight: bold;
+    padding: 3px;
+}
+
 
 @media screen and (max-width: 540px) {
     ul {
@@ -96,12 +102,18 @@ li.list-group-item {
 
 /* For Tablets */
 @media screen and (min-width: 540px) {
-    /*ul {*/
-    /*    columns: 2;*/
-    /*    -webkit-columns: 2;*/
-    /*    -moz-columns: 2;*/
-    /*    flex-wrap: wrap; !* Allow items to wrap into columns *!*/
-    /*}*/
+    ul.requests-list {
+        columns: 2;
+        -webkit-columns: 2;
+        -moz-columns: 2;
+        column-gap: 10px;
+        flex-wrap: wrap; /* Allow items to wrap into columns */
+    }
+
+    .filters {
+        padding-left: 30px;
+    }
+
     .grid-list {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -117,5 +129,6 @@ li.list-group-item {
 
     li.list-group-item {
         padding: 10px;
+        break-inside: avoid;
     }
 }

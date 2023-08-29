@@ -14,17 +14,18 @@ const search_spinner = document.querySelector("#search-spinner");
 function search() {
     search_spinner.style.display = "block";
     results.style.display = "none";
+
+    if (document.querySelector(".accordion-button").getAttribute("aria-expanded") === "false") {
+        document.querySelector(".accordion-button").click()
+    }
+
     // Send request to server
-    fetch(`/search?q=${search_input.value}`, {
+    fetch(`/search/?q=${search_input.value}`, {
         method: "GET",
     }).then(response => response.json())
         .then(result => {
             let ul = document.createElement("ul");
             ul.classList.add("p-1");
-
-            if (document.querySelector(".accordion-button").getAttribute("aria-expanded") === "false") {
-                document.querySelector(".accordion-button").click()
-            }
 
             // Handle no results
             if (result.results.length === 0) {
@@ -123,7 +124,7 @@ function search() {
                     artist.innerHTML = parse_names(song);
 
                     let album = document.createElement("p");
-                    album.innerHTML = song.album.name;
+                    album.innerHTML = "Album: " + song.album.name;
 
                     let titlediv = document.createElement("div");
                     titlediv.style.display = "inline-block";
@@ -134,23 +135,18 @@ function search() {
                     div.style.display = "inline-block";
                     div.classList.add("align-middle");
 
-                    let duration = document.createElement("span");
-                    duration.classList.add("text-muted");
-                    duration.style.display = "inline-block";
-                    duration.style.float = "right";
-                    duration.classList.add("my-3");
-
-                    duration.innerHTML = `${Math.floor(song.duration_ms / 60000)}:${Math.floor((song.duration_ms % 60000) / 1000).toString().padStart(2, '0')}`;
                     titlediv.appendChild(title);
                     titlediv.appendChild(artist);
+                    titlediv.appendChild(album);
                     div.appendChild(titlediv);
-                    div.appendChild(duration);
+
 
                     let spotify_link = document.createElement("a");
                     spotify_link.href = song.external_urls.spotify;
                     spotify_link.innerHTML = "Open on Spotify ";
-                    spotify_link.innerHTML += "<i class=\"bi bi-box-arrow-up-right\"></i>";
+                    spotify_link.innerHTML += "<i class=\"bi bi-spotify\"></i>";
                     spotify_link.target = "_blank";
+                    spotify_link.style.display = "block";
                     spotify_link.classList.add("btn");
                     spotify_link.classList.add("btn-primary");
 
@@ -160,7 +156,6 @@ function search() {
 
                     select.appendChild(image);
                     select.appendChild(div);
-                    select.appendChild(album);
                     select.appendChild(spotify_link);
 
                     // Close accordion
@@ -181,9 +176,13 @@ function search() {
 
 function submit() {
     if (from_name_input.value.length < 1) {
+        from_name_input.scrollIntoView();
+        alert("Please enter your name");
         return;
     }
     if (song_id.value.length < 1) {
+        search_input.scrollIntoView();
+        alert("Please select a song");
         return;
     }
 
@@ -208,10 +207,14 @@ function submit() {
 
     let card = document.querySelector(".card-body");
     card.classList.add("disabled-div");
-    document.querySelector("#submit_btn").disabled = true;
+    submit_btn.disabled = true;
 
     let spinner = document.querySelector(".spinner-border");
     spinner.style.display = "block";
+
+    if (!submit_btn.disabled) {
+        return;
+    }
 
     fetch(request).then(response => response.json())
         .then(result => {
@@ -224,7 +227,7 @@ function submit() {
                 // document.querySelector("#submit_btn").disabled = false;
                 let song = document.querySelector("#song_selection");
                 song.innerHTML = "";
-                document.querySelector("#song_id").value = "";
+                song_id.value = "";
                 search_input.value = "";
 
                 alert("Song submitted!");
@@ -255,5 +258,5 @@ search_input.addEventListener("input", () => {
                 search();
             }
         }
-    }, 500);
+    }, 300);
 });

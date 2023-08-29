@@ -35,7 +35,7 @@
                     <h1 class="text-center">Song Requests</h1>
                 </div>
             </div>
-            <div class="container my-2 content-align-center">
+            <div class="container my-2 content-align-center filters">
                 <h3>Filters</h3>
                 <button class="btn btn-outline-primary" id="refresh_btn"><i class="bi bi-arrow-clockwise"></i> Refresh
                 </button>
@@ -55,18 +55,13 @@
                         <input type="checkbox" id="played" name="played" value="true" class="form-check-input mt-1 me-1" style="min-width: 20px;">
                         <label for="played"> Include played songs</label>
                     </div>
-                    <div class="form-group fs-5 align-self-center mx-2 d-flex align-items-start"
-                         style="display: inline-block;">
-                        <input type="checkbox" checked id="spotify" name="spotify" value="true" class="form-check-input mt-1 me-1" style="min-width: 20px;">
-                        <label for="spotify"> Show "Open on Spotify" button</label>
-                    </div>
                 </div>
             </div>
 
             <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status" id="list_spinner">
                 <span class="visually-hidden">Loading...</span>
             </div>
-            <ul id="request_list" class="grid-list">
+            <ul id="request_list" class="grid-list requests-list">
 
             </ul>
 

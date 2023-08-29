@@ -71,12 +71,13 @@ CORS_ORIGIN_WHITELIST = (
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Add whitenoise nostatic when debug = true
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+
+# Add whitenoise nostatic when debug = true else add whitenoise staticfiles
 if DEBUG:
     INSTALLED_APPS.insert(0, 'whitenoise.runserver_nostatic')
-
-MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
+else:
+    STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 
 ROOT_URLCONF = 'music.urls'
 
