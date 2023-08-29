@@ -72,8 +72,11 @@
                             </h6>
                             <div id="search_results" class="accordion-collapse collapse show"
                                  data-bs-parent="#search_accordion">
-                                <div class="accordion-body no-m-p">
-                                    <div class="container-fluid no-m-p">
+                                <div class="accordion-body no-m-p align-items-center justify-content-center">
+                                    <div class="spinner-border" role="status" id="search-spinner" style="display: none; width: 2rem; height: 2rem;">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <div class="container-fluid no-m-p" id="results_div">
                                         <ul id="results_list" class="p-1">
                                             <li class="list-group-item list-group-item-action p-1">No results found</li>
                                         </ul>

@@ -7,24 +7,26 @@ const song_id = document.querySelector("#song_id");
 const from_name_input = document.querySelector("#from_name_input");
 const to_name_input = document.querySelector("#to_name_input");
 const submit_btn = document.querySelector("#submit_btn");
+const results = document.querySelector("#results_div");
+const search_spinner = document.querySelector("#search-spinner");
 
 
 function search() {
+    search_spinner.style.display = "block";
+    results.style.display = "none";
     // Send request to server
     fetch(`/search?q=${search_input.value}`, {
         method: "GET",
     }).then(response => response.json())
         .then(result => {
-            // console.log(result);
-
-            // Clear previous search results
-            document.querySelector("#results_list").innerHTML = "";
+            let ul = document.createElement("ul");
+            ul.classList.add("p-1");
 
             if (document.querySelector(".accordion-button").getAttribute("aria-expanded") === "false") {
                 document.querySelector(".accordion-button").click()
             }
 
-            // Display search results
+            // Handle no results
             if (result.results.length === 0) {
                 let li = document.createElement("li");
                 li.innerHTML = "No results found";
@@ -33,9 +35,10 @@ function search() {
                 li.classList.add("py-2")
                 li.style.width = "100%";
                 li.style.border = "1px solid #dee2e6";
-                document.querySelector("#results_list").append(li);
+                ul.append(li);
             }
 
+            // Display search results
             $.each(result.results, (key, song) => {
                 // console.log(song);
 
@@ -166,8 +169,13 @@ function search() {
                     }
                 }
 
-                document.querySelector("#results_list").append(li);
+                ul.append(li);
             });
+
+            results.innerHTML = "";
+            results.appendChild(ul);
+            search_spinner.style.display = "none";
+            results.style.display = "block";
         });
 }
 
@@ -230,13 +238,22 @@ function submit() {
 }
 
 search_btn.addEventListener("click", search);
-search_input.addEventListener("keyup", () => {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-        search_btn.click();
+search_input.addEventListener("input", () => {
+    if (search_input.value.length > 0) {
+        search_btn.disabled = false;
+    } else {
+        search_btn.disabled = true;
+        document.querySelector("#results_div").innerHTML = "";
     }
-    document.querySelector("#search_btn").disabled = search_input.value.length < 3;
-    search_input.addEventListener("change", search);
 
-    submit_btn.addEventListener("click", submit);
+    let query = search_input.value;
+
+    // Set a timeout to prevent too many requests
+    setTimeout(() => {
+        if (query === search_input.value) {
+            if (search_input.value.length > 2) {
+                search();
+            }
+        }
+    }, 500);
 });
