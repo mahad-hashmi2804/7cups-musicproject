@@ -39,11 +39,11 @@ class Song(models.Model):
     def __str__(self):
         return self.title
 
-    def save(self, count=0):
+    def save(self, count=0, *args, **kwargs):
         if count > 5:
             return
         try:
-            super().save()
+            super().save(*args, **kwargs)
         except django.db.utils.OperationalError:
             connection.connection.close()
             connection.connection = None
@@ -54,7 +54,7 @@ class Song(models.Model):
             song.challenged_by = self.challenged_by
             song.last_modified = self.last_modified
             song.status = self.status
-            song.save(count=count + 1)
+            song.save(count=count + 1, *args, **kwargs)
 
     def challenge(self, user, status="challenged"):
         if self.reviewed_by.groups.filter(name="Song Approver").exists():
