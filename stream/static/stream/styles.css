@@ -66,6 +66,29 @@ li.list-group-item {
     padding: 3px;
 }
 
+.play-button {
+    font-size: 3rem;
+    padding: 3px;
+    color: #fff;
+    background-color: transparent;
+    border: none;
+    opacity: 0;
+    width: 100px;
+    height: 100px;
+    z-index: 10;
+    position: relative;
+}
+.play-button:hover {
+    color: #fff;
+    background-color: grey;
+    opacity: 0.4;
+    border: none;
+    display: block;
+    z-index: 10;
+    position: relative;
+}
+
+
 
 @media screen and (max-width: 540px) {
     ul {

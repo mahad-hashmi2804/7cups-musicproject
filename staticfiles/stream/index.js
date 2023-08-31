@@ -108,46 +108,45 @@ function search() {
 
                     let image = document.createElement("img");
                     image.src = song.album.images[1].url;
+                    image.style.zIndex = "1";
+                    image.style.position = "absolute";
+                    image.style.top = "0";
                     image.width = 100;
                     image.height = 100;
 
-                    // Add song preview player
-                    let preview = document.createElement("audio");
-                    preview.controls = true;
-                    preview.src = song.preview_url;
-                    preview.style.display = "none";
+                    if (song.preview_url !== null) {
 
-                    // The player should be invisible and only can be played or paused by clicking a semi-transparent overlay play button on top of the image
-                    let play_button = document.createElement("button");
-                    play_button.classList.add("btn");
-                    play_button.classList.add("btn-primary");
-                    play_button.classList.add("play-button");
-                    play_button.style.opacity = "0.5";
-                    play_button.innerHTML = "<i class=\"bi bi-play-fill\"></i>";
-                    play_button.onclick = () => {
-                        if (preview.paused) {
-                            preview.play();
-                            play_button.innerHTML = "<i class=\"bi bi-pause-fill\"></i>";
-                        } else {
-                            preview.pause();
-                            play_button.innerHTML = "<i class=\"bi bi-play-fill\"></i>";
-                        }
-                    };
+                        // Add song preview player
+                        let preview = document.createElement("audio");
+                        preview.controls = true;
+                        preview.src = song.preview_url;
+                        preview.style.display = "none";
 
-                    let play_button_div = document.createElement("div");
-                    play_button_div.classList.add("play-button-div");
-                    play_button_div.appendChild(play_button);
-                    play_button_div.style.position = "relative";
-                    play_button_div.style.zIndex = "5";
+                        // The player should be invisible and only can be played or paused by clicking a semi-transparent overlay play button on top of the image
+                        let play_button = document.createElement("button");
+                        play_button.classList.add("play-button");
+                        play_button.title = "Play song preview";
 
-                    let preview_div = document.createElement("div");
-                    preview_div.classList.add("preview-div");
-                    preview_div.appendChild(preview);
-                    preview_div.appendChild(play_button_div);
-                    preview_div.appendChild(image);
-                    preview_div.style.position = "absolute";
+                        play_button.innerHTML = "<i class=\"bi bi-play-fill\"></i>";
+                        play_button.onclick = () => {
+                            if (preview.paused) {
+                                preview.play();
+                                play_button.innerHTML = "<i class=\"bi bi-pause-fill\"></i>";
+                            } else {
+                                preview.pause();
+                                play_button.innerHTML = "<i class=\"bi bi-play-fill\"></i>";
+                            }
+                        };
 
-                    // select.appendChild(preview_div);
+
+                        let preview_div = document.createElement("div");
+                        preview_div.classList.add("preview-div");
+                        preview_div.style.zIndex = "1";
+                        preview_div.appendChild(image);
+                        preview_div.appendChild(preview);
+                        preview_div.appendChild(play_button);
+                        preview_div.style.position = "relative";
+                    }
 
                     let title = document.createElement("h6");
                     title.innerHTML = song.name;
@@ -191,7 +190,7 @@ function search() {
 
                     select.innerHTML = "";
 
-                    select.appendChild(preview_div);
+                    select.appendChild(song.preview_url !== null ? preview_div : image);
                     select.appendChild(div);
                     select.appendChild(spotify_link);
 
