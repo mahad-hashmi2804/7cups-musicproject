@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', default='django-insecure-dx_m)&26-*z*81%xy6ca)b887)0ov-+@b@$s%co*2-mi5=t!la')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'RENDER' not in os.environ and 'VERCEL_URL' not in os.environ
+DEBUG = True
 
 AUTH_USER_MODEL = "stream.User"
 
