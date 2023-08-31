@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "music/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+    "routes": [
+        {
+        "src": "/(.*)",
+        "dest": "/music/wsgi.py"
+        }
+    ]
+}

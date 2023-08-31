@@ -280,7 +280,7 @@ def song_requests_api(request):
 
         if count > 50:
             song_requests = song_requests[:50]
-        elif count == 1:
+        elif count < 10:
             pass
         elif count % 2:
             song_requests = song_requests[:count - 1]
