@@ -114,6 +114,8 @@ function search() {
                     image.width = 100;
                     image.height = 100;
 
+                    let preview_div = null;
+
                     if (song.preview_url !== null) {
 
                         // Add song preview player
@@ -139,7 +141,7 @@ function search() {
                         };
 
 
-                        let preview_div = document.createElement("div");
+                        preview_div = document.createElement("div");
                         preview_div.classList.add("preview-div");
                         preview_div.style.zIndex = "1";
                         preview_div.appendChild(image);
