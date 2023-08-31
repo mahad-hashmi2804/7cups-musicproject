@@ -108,15 +108,16 @@ function search() {
 
                     let image = document.createElement("img");
                     image.src = song.album.images[1].url;
-                    image.style.zIndex = "1";
-                    image.style.position = "absolute";
-                    image.style.top = "0";
+
                     image.width = 100;
                     image.height = 100;
 
                     let preview_div = null;
 
                     if (song.preview_url !== null) {
+                        image.style.zIndex = "1";
+                        image.style.position = "absolute";
+                        image.style.top = "0";
 
                         // Add song preview player
                         let preview = document.createElement("audio");
@@ -144,6 +145,7 @@ function search() {
                         preview_div = document.createElement("div");
                         preview_div.classList.add("preview-div");
                         preview_div.style.zIndex = "1";
+                        preview_div.style.display = "inline-block";
                         preview_div.appendChild(image);
                         preview_div.appendChild(preview);
                         preview_div.appendChild(play_button);
