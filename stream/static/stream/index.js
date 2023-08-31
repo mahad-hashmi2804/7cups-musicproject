@@ -147,7 +147,7 @@ function search() {
                     preview_div.appendChild(image);
                     preview_div.style.position = "absolute";
 
-                    select.appendChild(preview_div);
+                    // select.appendChild(preview_div);
 
                     let title = document.createElement("h6");
                     title.innerHTML = song.name;
@@ -191,7 +191,7 @@ function search() {
 
                     select.innerHTML = "";
 
-                    select.appendChild(image);
+                    select.appendChild(preview_div);
                     select.appendChild(div);
                     select.appendChild(spotify_link);
 
