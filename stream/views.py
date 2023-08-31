@@ -110,7 +110,7 @@ class Processing:
         self.timestamp = None
         self.token = None
         self.audio_queue = []
-        self.refresh_token = "AQBb3vE-CQRBF4MD-2aegamUOkriAKrCpdwKYfedE5SO23qTEni4aOhKqJCE_kjXDPWFNe4dZvccLVB2lILiwWDBzI3DPqaa1bfmdbqOs23xf65rhYsLyai2i39-TGcwhNQ"
+        self.refresh_token = "AQDU6On85EK891r2nLDAw1cg5fir9J-iJ2JmAbEa-vFSbmapS-Uk87R8cVp41l0qTkOj7wv7ng0iOUZemBRR0I3oFTXTvfViUpS8Yie49qVyrWXVZXc7-yymrww8q4_cXhI"
         self.get_token()
 
     def get_token(self):
@@ -152,7 +152,7 @@ class Processing:
     def song_to_playlist(self, song_id, delete=False):
         self.check_token()
 
-        url = "https://api.spotify.com/v1/playlists/4EO6RXjlbJ2T8Fw7L6YTMu/tracks"
+        url = "https://api.spotify.com/v1/playlists/263t7pCY6hkGjJAYiwqvSi/tracks"
         headers = {"Authorization": "Bearer " + self.token, "Content-Type": "application/json"}
         params = {"uris": "spotify:track:" + song_id}
         if delete:
