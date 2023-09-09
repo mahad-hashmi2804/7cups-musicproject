@@ -152,7 +152,7 @@ class Processing:
     def song_to_playlist(self, song_id, delete=False):
         self.check_token()
 
-        url = "https://api.spotify.com/v1/playlists/263t7pCY6hkGjJAYiwqvSi/tracks"
+        url = "https://api.spotify.com/v1/playlists/" + os.environ.get("PLAYLIST_ID", default="4EO6RXjlbJ2T8Fw7L6YTMu") + "/tracks"
         headers = {"Authorization": "Bearer " + self.token, "Content-Type": "application/json"}
         params = {"uris": "spotify:track:" + song_id}
         if delete:
